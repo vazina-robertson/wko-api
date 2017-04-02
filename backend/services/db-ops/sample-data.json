@@ -1,0 +1,56 @@
+{
+  "users": [
+    {
+      "first_name": "John",
+      "last_name": "Doe",
+      "username": "john",
+      "password": "wko",
+      "email": "john@example.com",
+      "host_id": 3
+    },
+    {
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "username": "jane",
+      "password": "wko",
+      "email": "jane@example.com",
+      "host_id": 3
+    },
+    {
+      "first_name": "Admin",
+      "last_name": "VPN-User",
+      "username": "vpn-admin",
+      "password": "f4K3p455w0rD",
+      "host_id": 2
+    }
+  ],
+  "hosts": [
+    {
+      "name": "api-lan-host",
+      "address": "192.168.x.x",
+      "type": "api"
+    },
+    {
+      "name": "nas-lan-host",
+      "address": "192.168.x.y",
+      "type": "nas"
+    },
+    {
+      "name": "vpn-host",
+      "address": "example.url.com",
+      "type": "vpn"
+    },
+    {
+      "name": "wko-io",
+      "address": "www.wko.io",
+      "type": "web"
+    }
+  ],
+  "slack_clients": [
+    {
+      "token": "5oM3sUp3RL0n67oK3n",
+      "name": "wko-io",
+      "data": { "slugs": [ "www", "slack", "api" ] }
+    }
+  ]
+}
