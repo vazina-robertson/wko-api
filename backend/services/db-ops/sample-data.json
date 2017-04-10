@@ -1,4 +1,14 @@
 {
+  "flags": [
+    {
+      "name": "admin",
+      "description": "Allows administator access"
+    },
+    {
+      "name": "vpn",
+      "description": "Allows VPN access"
+    }
+  ],
   "users": [
     {
       "first_name": "John",
@@ -51,6 +61,12 @@
       "token": "5oM3sUp3RL0n67oK3n",
       "name": "wko-io",
       "data": { "slugs": [ "www", "slack", "api" ] }
+    }
+  ],
+  "user_flags": [
+    {
+      "user_id": 2,
+      "flag_id": 1
     }
   ]
 }
