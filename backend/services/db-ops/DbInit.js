@@ -43,12 +43,43 @@ module.exports = class DbInit
   {
     debug('Creating db tables now...');
 
-    for (let file of tableFiles) {
-      const def = require(path.join(modelsPath, file));
+    const defs = tableFiles.map(f => require(path.join(modelsPath, f)));
+
+    for (let def of defs) {
       await def.create(this._knex);
     }
 
+    // associate any models that need it
+    for (let def of defs) {
+      if (typeof def.associate === 'function') {
+        await def.associate(this._knex);
+      }
+    }
+
     debug('Tables created successfully!');
+  }
+
+  async _importFlags()
+  {
+    for (let flag of data.flags) {
+      await this._knex
+        .insert(flag)
+        .into('flags');
+    }
+  }
+
+  async _importUserFlags()
+  {
+    const userRefs = data.users.map(u => q => q.select('id').from('users').where({ username: u.username }));
+    const flagRefs = data.flags.map(f => q => q.select('id').from('flags').where({ name: f.name }));
+
+    for (let uf of data.user_flags) {
+      await this._knex.insert({
+        flag_id: flagRefs[uf.flag_id],
+        user_id: userRefs[uf.user_id]
+      })
+      .into('user_flags');
+    }
   }
 
   /*
@@ -107,9 +138,11 @@ module.exports = class DbInit
     debug('Adding db-init data to database');
 
     // run db data insertions
+    await this._importFlags();
     await this._importHosts();
     await this._importUsers();
     await this._importSlackClients();
+    await this._importUserFlags();
 
     debug('DB-Init import Succeeded!');
   }
