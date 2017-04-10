@@ -8,11 +8,12 @@ const routes = require('../../routes');
 
 module.exports = class Server
 {
-  constructor(stackConfig, db)
+  constructor(stackConfig, db, authManager)
   {
     this._config = stackConfig;
     this._db = db;
     this._app = express();
+    this._authManager = authManager;
   }
 
   start()
@@ -22,8 +23,13 @@ module.exports = class Server
     this._app.use(cookieParser());
 
     this._config.harness.inject = Object.assign(
-      // excessive injection of db model api for routes
-      {}, this._db, { db: this._db }
+      {},
+      this._db, // excessive injection of db model api for routes
+      {
+        authManager: this._authManager,
+        db: this._db,
+        stackConfig: this._config
+      }
     );
 
     this._harness = new Harness(this._app, this._config.harness);

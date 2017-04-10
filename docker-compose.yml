@@ -14,6 +14,7 @@ api:
     - SERVICES=server
     - 'DB_URL=postgres://dev:dev@db:5432/dev'
     - VIRTUAL_HOST=*,https://*
+    - JWT_SECRET=dev-secret
   ports:
     - 1337
   volumes:

@@ -8,6 +8,7 @@ module.exports = Object.assign(
   { // overrides
     NODE_ENV: process.env.NODE_ENV || 'development',
     CORE_SERVICES: 'db',
-    SERVICES: process.env.SERVICES || ''
+    SERVICES: process.env.SERVICES || '',
+    JWT_SECRET: process.env.JWT_SECRET
   }
 );
