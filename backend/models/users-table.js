@@ -16,16 +16,30 @@ module.exports = {
       table.string('password');
       table.string('email');
 
+    })
+    .catch(err => { throw new Error(err); })
+    .then(() => debug('users table created'));
+  },
+
+  /*
+
+    Create associations after tables have been created
+
+  */
+  async associate(knex)
+  {
+    return await knex.schema.table('users', table => {
+
       // associate optional host_id to hosts table
       table.integer('host_id')
           .nullable(true)
           .default(null)
           .references('hosts.id');
 
-      table.timestamps();
-    })
-    .catch(err => { throw new Error(err); })
-    .then(() => debug('users table created'));
+      // make sure timestamps appear as last columns
+      table.timestamps(true, true);
+
+    });
   }
 };
 

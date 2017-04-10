@@ -39,10 +39,6 @@ module.exports = class UsersApi {
       this._knex.raw(`id = ${id}`)
     );
 
-    if (!res) {
-      throw new Error(`Can't find user with id: ${id}`);
-    }
-
     return this._clean(res);
   }
 

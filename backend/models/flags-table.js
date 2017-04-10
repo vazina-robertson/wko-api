@@ -8,15 +8,14 @@ module.exports = {
   */
   async create(knex)
   {
-    return await knex.schema.createTableIfNotExists('slack_clients', table => {
+    return await knex.schema.createTableIfNotExists('flags', table => {
       table.increments();
-      table.text('token').unique();
-      table.text('name');
-      table.jsonb('data');
+      table.string('name');
+      table.string('description');
       table.timestamps(true, true);
     })
     .catch(err => { throw new Error(err); })
-    .then(() => debug('slack_clients table created'));
+    .then(() => debug('flags table created'));
   }
 };
 

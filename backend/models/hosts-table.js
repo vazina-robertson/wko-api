@@ -13,7 +13,7 @@ module.exports = {
       table.string('name').unique();
       table.string('address').unique();
       table.string('type');
-      table.timestamps();
+      table.timestamps(true, true);
     })
     .catch(err => { throw new Error(err); })
     .then(() => debug('hosts table created'));
