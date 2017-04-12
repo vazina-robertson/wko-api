@@ -5,10 +5,14 @@
 */
 module.exports = class Hosts
 {
-  constructor({ db, harness })
+  constructor(db, harness)
   {
     this._db = db;
-    harness.get('/', this.getHosts);
+
+    const routes = harness();
+    routes.get('/', this.getHosts);
+
+    routes.useInstance('/hosts', this);
   }
 
   async getHosts()

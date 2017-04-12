@@ -1,6 +1,8 @@
-module.exports = [
-  { basePath: '/', file: require('./Root') },
-  { basePath: '/users/', file: require('./Users') },
-  { basePath: '/slack-clients/', file: require('./SlackClients') },
-  { basePath: '/hosts/', file: require('./Hosts') }
-];
+const fs = require('fs');
+
+const files = fs.readdirSync(__dirname);
+const routes = files.filter(f => f !== 'index.js');
+
+
+module.exports = routes.map(r => require(`./${r}`));
+

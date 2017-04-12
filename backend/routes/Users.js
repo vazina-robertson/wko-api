@@ -1,11 +1,15 @@
 
 module.exports = class UsersRoutes
 {
-  constructor({ harness, db })
+  constructor(harness, db)
   {
     this._users = db.users;
-    harness.get('/', this.fetchAll);
-    harness.get('/:id', this.fetchById);
+
+    const routes = harness();
+    routes.get('/', this.fetchAll);
+    routes.get('/:id', this.fetchById);
+
+    routes.useInstance('/users', this);
   }
 
   async fetchAll()

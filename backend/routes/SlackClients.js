@@ -5,11 +5,14 @@
 */
 module.exports = class SlackClientsRoutes
 {
-  constructor({ db, harness })
+  constructor(db, harness)
   {
     this._db = db;
 
-    harness.get('/', this.getClients);
+    const routes = harness();
+    routes.get('/', this.getClients);
+
+    routes.useInstance('/slack-clients', this);
   }
 
   async getClients()

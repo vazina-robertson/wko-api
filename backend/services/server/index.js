@@ -14,7 +14,7 @@ module.exports = class ServerService
   async start()
   {
     const server = this._stack.make(Server);
-    server.start();
+    server.init();
   }
 
 };

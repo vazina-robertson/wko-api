@@ -1,11 +1,16 @@
 
 module.exports = class AuthRoutes
 {
-  constructor({ harness, db, authManager })
+  constructor(harness, db, authManager)
   {
     this._db = db;
     this._authManager = authManager;
-    harness.post('/login', this.login);
+
+    const routes = harness();
+    routes.post('/login', this.login);
+    routes.get('/login', this.loginPage);
+
+    routes.useInstance('/auth', this);
   }
 
 
@@ -18,8 +23,18 @@ module.exports = class AuthRoutes
   {
 
     res.send(`
-      <form>
-        <><>
+      <form action="/login" method="post">
+          <div>
+              <label>Username:</label>
+              <input type="text" name="username"/>
+          </div>
+          <div>
+              <label>Password:</label>
+              <input type="password" name="password"/>
+          </div>
+          <div>
+              <input type="submit" value="Log In"/>
+          </div>
       </form>
     `);
   }

@@ -4,37 +4,29 @@ const Harness = require('route-harness');
 const express = require('express');
 
 const listener = require('./listener');
-const routes = require('../../routes');
+const Routes = require('../../routes');
 
 module.exports = class Server
 {
-  constructor(stackConfig, db, authManager)
+  constructor(stackConfig, stack, db)
   {
     this._config = stackConfig;
+    this._stack = stack;
     this._db = db;
     this._app = express();
-    this._authManager = authManager;
   }
 
-  start()
+  init()
   {
     this._app.use(bodyParser.json());
     this._app.use(bodyParser.urlencoded({ extended: false }));
     this._app.use(cookieParser());
 
-    this._config.harness.inject = Object.assign(
-      {},
-      this._db, // excessive injection of db model api for routes
-      {
-        authManager: this._authManager,
-        db: this._db,
-        stackConfig: this._config
-      }
-    );
+    const harness = new Harness(this._app, this._config.harness);
+    this._stack.registerInstance('harness', harness.factory);
 
-    this._harness = new Harness(this._app, this._config.harness);
-    for (let route of routes) {
-      this._harness.use(route.basePath, route.file);
+    for (let Route of Routes) {
+      this._stack.make(Route);
     }
 
     this._initErrorHandlers();
