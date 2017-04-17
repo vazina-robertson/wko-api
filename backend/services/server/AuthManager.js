@@ -52,7 +52,9 @@ module.exports = class AuthManager
           return;
         }
 
+        // debug(`[userAuth] authenticating user ${session.user_id}: ok!`);
         req.session = session;
+        req.user = await this.getUserFromSession(session);
       }
 
       next();
@@ -114,7 +116,6 @@ module.exports = class AuthManager
       secret,
       client_ip,
       user_agent,
-      created: date,
       last_activity: date
     };
 
@@ -139,14 +140,13 @@ module.exports = class AuthManager
       // for now, not checking secret, just trusting signed token
       const { sub: id } = jwt.decode(token, this._config.JWT_SECRET);
 
-      const [ session ] = await this._db.sessions.getById(id);
+      const session = await this._db.sessions.getById(id);
 
       if (!session) {
         return null;
       }
 
-      await this._db.table('sessions').where({ id })
-        .update({ last_activity: new Date() });
+      await this._db.sessions.newActivity(session);
 
       return session;
 
@@ -169,9 +169,7 @@ module.exports = class AuthManager
 
     const { user_id } = session;
 
-    const [ user ] = await this._db
-      .table('users')
-      .where({ id: user_id });
+    const user = await this._db.users.getById(user_id);
 
     return user;
   }

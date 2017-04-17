@@ -21,9 +21,8 @@ module.exports = class AuthRoutes
   */
   async loginPage()
   {
-
-    res.send(`
-      <form action="/login" method="post">
+    return `
+      <form action="/auth/login" name="login" method="post">
           <div>
               <label>Username:</label>
               <input type="text" name="username"/>
@@ -33,10 +32,10 @@ module.exports = class AuthRoutes
               <input type="password" name="password"/>
           </div>
           <div>
-              <input type="submit" value="Log In"/>
+              <input type="submit" value="login"/>
           </div>
       </form>
-    `);
+    `;
   }
 
   async login(req)
@@ -44,10 +43,19 @@ module.exports = class AuthRoutes
     const { username, password } = req.body;
 
     try {
+
+      // check login success
       const success = await this._db.users.checkPassword(username, password);
       if (success) {
-        // TODO create new token and store in sessions table
+
+        // fetch user
+        const user = await this._db.users.getByUsername(username);
+
+        // create new session / token
+        const { token } = await this._authManager.createSession(user, req);
+        return { token, ok: true };
       }
+
     }
     catch (err) {
       throw new Error('Bad Login Credentials');

@@ -7,7 +7,7 @@ module.exports = class SessionsApi {
 
   constructor(knex)
   {
-    this._knex = knex;
+    this._sessions = () => knex.table('sessions');
   }
 
   /*
@@ -17,10 +17,25 @@ module.exports = class SessionsApi {
   */
   async create(data)
   {
-    return await this._knex
-      .table('sessions')
+    return await this._sessions()
       .insert(data)
       .returning('*');
+  }
+
+  /*
+
+    update the last_activity for a given session
+
+  */
+  async newActivity(id)
+  {
+    if (!id) {
+      throw new Error('Missing param id');
+    }
+
+    await this._sessions()
+        .update({ last_activity: new Date() })
+        .where({ id })
   }
 
   /*
@@ -34,9 +49,7 @@ module.exports = class SessionsApi {
       throw new Error('Missing id param');
     }
 
-    const [ res ] = await this._q(
-      this._knex.raw(`id = ${id}`)
-    );
+    const [ res ] = await this._q({ id });
 
     return this._clean(res);
   }
@@ -68,9 +81,8 @@ module.exports = class SessionsApi {
   */
   async _q(w = {})
   {
-    return await this._knex
+    return await this._sessions()
       .select('*')
-      .from('sessions')
       .where(w);
   }
 

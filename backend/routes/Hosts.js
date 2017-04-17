@@ -5,14 +5,14 @@
 */
 module.exports = class Hosts
 {
-  constructor(db, harness)
+  constructor(db, authManager, harness)
   {
     this._db = db;
 
     const routes = harness();
     routes.get('/', this.getHosts);
 
-    routes.useInstance('/hosts', this);
+    routes.useInstance('/hosts', [ authManager.middleware() ], this);
   }
 
   async getHosts()

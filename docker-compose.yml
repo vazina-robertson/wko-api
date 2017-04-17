@@ -9,7 +9,7 @@ api:
   image: willko/wko-api:latest
   command: npm run dev
   environment:
-    - DEBUG=billy*,db*,server*,route*,ref*
+    - DEBUG=billy*,db*,server*,route*,ref*,app*
     - DEBUG_COLORS=true
     - SERVICES=server
     - 'DB_URL=postgres://dev:dev@db:5432/dev'

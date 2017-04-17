@@ -1,7 +1,7 @@
 
 module.exports = class UsersRoutes
 {
-  constructor(harness, db)
+  constructor(harness, db, authManager)
   {
     this._users = db.users;
 
@@ -9,7 +9,7 @@ module.exports = class UsersRoutes
     routes.get('/', this.fetchAll);
     routes.get('/:id', this.fetchById);
 
-    routes.useInstance('/users', this);
+    routes.useInstance('/users', [ authManager.middleware() ], this);
   }
 
   async fetchAll()

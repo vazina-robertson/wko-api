@@ -42,6 +42,15 @@ module.exports = class UsersApi {
     return this._clean(res);
   }
 
+  async getByUsername(username)
+  {
+    const [ user ] = await this._q({
+      username
+    });
+
+    return this._clean(user);
+  }
+
   /*
 
     run a basic users query
