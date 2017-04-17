@@ -24,7 +24,7 @@ module.exports = class SessionsApi {
 
   /*
 
-    update the last_activity for a given session
+    update the last_activity for a session with given id
 
   */
   async newActivity(id)

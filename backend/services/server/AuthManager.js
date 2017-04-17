@@ -146,7 +146,7 @@ module.exports = class AuthManager
         return null;
       }
 
-      await this._db.sessions.newActivity(session);
+      await this._db.sessions.newActivity(session.id);
 
       return session;
 
