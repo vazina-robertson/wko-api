@@ -3,16 +3,14 @@
   Routes for hosts
 
 */
-module.exports = class Hosts
+module.exports = class HostsRoutes
 {
-  constructor(db, authManager, harness)
+  constructor(db, harness)
   {
     this._db = db;
+    const routes = harness(this);
 
-    const routes = harness();
     routes.get('/', this.getHosts);
-
-    routes.useInstance('/hosts', [ authManager.middleware() ], this);
   }
 
   async getHosts()

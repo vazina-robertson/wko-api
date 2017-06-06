@@ -4,16 +4,18 @@ const Harness = require('route-harness');
 const express = require('express');
 
 const listener = require('./listener');
-const Routes = require('../../routes');
+
 
 module.exports = class Server
 {
-  constructor(stackConfig, container, db)
+  constructor(stackConfig, container, db, authManager)
   {
     this._config = stackConfig;
     this._container = container;
     this._db = db;
     this._app = express();
+    this._auth = authManager;
+    this._container.registerValue('rest', this._app);
   }
 
   init()
@@ -22,13 +24,23 @@ module.exports = class Server
     this._app.use(bodyParser.urlencoded({ extended: false }));
     this._app.use(cookieParser());
 
-    const harness = new Harness(this._app, this._config.harness);
-    this._container.registerValue('harness', harness.factory);
+    // init the harness
+    const harness = new Harness(this._app);
 
-    for (let Route of Routes) {
-      this._container.new(Route);
-    }
+    // use billy as a custom factory for the route harness
+    const harnessOpts = Object.assign({}, this._config.harness, {
+      factory: T => this._container.new(T)
+    });
 
+    harness.configure(harnessOpts);
+
+    // register the harness
+    this._container.registerValue('harness', harness.restHarness);
+    this._container.registerValue('routeHarness', harness);
+  }
+
+  listen()
+  {
     this._initErrorHandlers();
     listener.listen(this._app, this._config.PORT);
   }

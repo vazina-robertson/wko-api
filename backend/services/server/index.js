@@ -1,4 +1,5 @@
 const Server = require('./Server');
+const Routes = require('./Routes');
 const AuthManager = require('./AuthManager');
 
 module.exports = class ServerService
@@ -15,6 +16,8 @@ module.exports = class ServerService
   {
     const server = this._container.new(Server);
     server.init();
+    this._container.new(Routes);
+    server.listen();
   }
 
 };

@@ -5,12 +5,10 @@ module.exports = class AuthRoutes
   {
     this._db = db;
     this._authManager = authManager;
+    const routes = harness(this);
 
-    const routes = harness();
     routes.post('/login', this.login);
     routes.get('/login', this.loginPage);
-
-    routes.useInstance('/auth', this);
   }
 
 

@@ -1,13 +1,12 @@
 
 module.exports = class RootRoutes
 {
-  constructor(harness, db, authManager)
+  constructor(harness, db)
   {
     this._db = db;
-    const routes = harness();
-    routes.get('/', this.getIndex);
+    const routes = harness(this);
 
-    routes.useInstance('/', [ authManager.middleware() ], this);
+    routes.get('/', this.getIndex);
   }
 
   async getIndex()
