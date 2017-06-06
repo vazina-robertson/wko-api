@@ -4,16 +4,16 @@ const AuthManager = require('./AuthManager');
 module.exports = class ServerService
 {
 
-  constructor(stack)
+  constructor(container)
   {
-    this._stack = stack;
-    const authManager = stack.make(AuthManager);
-    stack.registerInstance('authManager', authManager);
+    this._container = container;
+    const authManager = container.new(AuthManager);
+    container.registerValue('authManager', authManager);
   }
 
   async start()
   {
-    const server = this._stack.make(Server);
+    const server = this._container.new(Server);
     server.init();
   }
 

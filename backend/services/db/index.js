@@ -6,14 +6,14 @@ const DataApiLoader = require('./DataApiLoader');
  */
 module.exports = class DataApiService
 {
-  constructor(stack)
+  constructor(container)
   {
     // register knex client
-    stack.registerInstance('knex', stack.make(DbConnection).getClient());
+    container.registerValue('knex', container.new(DbConnection).getClient());
 
     // register the data layer api
-    this._db = stack.make(DataApiLoader).createApi();
-    stack.registerInstance('db', this._db);
+    this._db = container.new(DataApiLoader).createApi();
+    container.registerValue('db', this._db);
   }
 
   async start()

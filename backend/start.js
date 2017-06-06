@@ -3,8 +3,6 @@ const config = require('./config');
 const strToArr = require('utils').strToArr;
 
 const stack = new Application();
-stack.registerInstance('stack', stack);
-stack.registerInstance('stackConfig', config);
 
 try {
 

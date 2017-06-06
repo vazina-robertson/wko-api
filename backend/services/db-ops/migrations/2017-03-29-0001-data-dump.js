@@ -8,9 +8,9 @@ const DbInit = require('../DbInit');
 */
 module.exports = {
 
-  async up({ db, stack })
+  async up({ db, container })
   {
-    const dbInit = stack.make(DbInit);
+    const dbInit = container.new(DbInit);
 
     try {
 

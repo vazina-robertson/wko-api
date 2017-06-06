@@ -10,14 +10,14 @@ const debug = require('debug')('db:migrations');
 */
 module.exports = class DbOpsService
 {
-  constructor(db, stack)
+  constructor(db, container)
   {
     this.um = new Umzug({
       storage: path.join(__dirname, './MigrationStorage.js'),
       storageOptions: { db },
       migrations: {
         path: path.join(__dirname, './migrations'),
-        wrap: fn => async () => await fn({ db, stack })
+        wrap: fn => async () => await fn({ db, container })
       }
     });
   }

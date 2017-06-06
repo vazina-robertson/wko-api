@@ -23,7 +23,7 @@
   "dependencies": {
     "async-retry": "0.2.1",
     "bcrypt": "1.0.2",
-    "billy": "1.7.3",
+    "billy": "2.0.1",
     "bluebird": "3.4.7",
     "body-parser": "1.15.1",
     "cookie-parser": "1.4.3",

@@ -24,9 +24,9 @@ const scopeName = fname =>
 module.exports = class DataApiLoader
 {
 
-  constructor(stack, knex)
+  constructor(container, knex)
   {
-    this._stack = stack;
+    this._container = container;
     this._knex = knex;
     this._db = {};
   }
@@ -42,10 +42,10 @@ module.exports = class DataApiLoader
     for (let file of apiFiles) {
       const M = require(path.join(DATA_API_PATH, file));
       const name = scopeName(file);
-      const m = this._stack.make(M);
+      const m = this._container.new(M);
 
       // below might be overboard injection but w/e
-      this._stack.registerInstance(name, m);
+      this._container.registerValue(name, m);
 
       this._db[name] = m;
     }

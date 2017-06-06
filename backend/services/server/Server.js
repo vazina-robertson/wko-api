@@ -8,10 +8,10 @@ const Routes = require('../../routes');
 
 module.exports = class Server
 {
-  constructor(stackConfig, stack, db)
+  constructor(stackConfig, container, db)
   {
     this._config = stackConfig;
-    this._stack = stack;
+    this._container = container;
     this._db = db;
     this._app = express();
   }
@@ -23,10 +23,10 @@ module.exports = class Server
     this._app.use(cookieParser());
 
     const harness = new Harness(this._app, this._config.harness);
-    this._stack.registerInstance('harness', harness.factory);
+    this._container.registerValue('harness', harness.factory);
 
     for (let Route of Routes) {
-      this._stack.make(Route);
+      this._container.new(Route);
     }
 
     this._initErrorHandlers();
