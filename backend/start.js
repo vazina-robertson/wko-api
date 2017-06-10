@@ -6,6 +6,10 @@ const stack = new Application();
 
 try {
 
+  // register the config
+  stack.container.registerValue('stackConfig', config);
+
+  // register services via environment variables
   const services = [
     ...strToArr(config.CORE_SERVICES),
     ...strToArr(config.SERVICES)
@@ -15,6 +19,7 @@ try {
     stack.service(require(`./services/${svc}`));
   }
 
+  // start the app
   stack.start();
 }
 catch (err) {
