@@ -36,9 +36,10 @@ db-ops:
     - db
 
 db:
-  image: mdillon/postgis:9.5
+  image: postgres:9.6
   ports:
-    - 5432:5432
+    - '5432:5432'
   environment:
-    - POSTGRES_USER=dev
+    - POSTGRES_DB=dev
     - POSTGRES_PASSWORD=dev
+    - POSTGRES_USER=dev
