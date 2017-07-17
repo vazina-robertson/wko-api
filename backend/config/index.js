@@ -5,6 +5,9 @@ module.exports = Object.assign(
   require('./server'),
   require('./db'),
 
+  // build info
+  { build: require('./build-info.json') },
+
   { // overrides
     NODE_ENV: process.env.NODE_ENV || 'development',
     CORE_SERVICES: 'db',

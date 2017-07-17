@@ -12,7 +12,8 @@ module.exports = {
       table.increments();
       table.text('token').unique();
       table.text('name');
-      table.jsonb('data');
+      table.text('host');
+      table.text('version_path');
       table.timestamps(true, true);
     })
     .catch(err => { throw new Error(err); })

@@ -10,6 +10,7 @@ run:
 	docker-compose run --no-deps --rm db-ops npm start
 
 build:
+	node ./backend/versioner.js
 	docker build -t willko/wko-api:latest ./backend
 
 kill:

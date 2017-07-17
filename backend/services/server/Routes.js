@@ -14,12 +14,12 @@ module.exports = class Routes
 
     // un-authed-routes
     routeHarness.mountRoutes('/auth', AuthRoutes);
+    routeHarness.mountRoutes('/', RootRoutes);
 
-    // authed-routes (root route goes last as to not doubly call middleware)
+    // authed-routes
     routeHarness.mountRoutes('/hosts', [ auth() ], HostsRoutes);
     routeHarness.mountRoutes('/users', [ auth() ], UsersRoutes);
     routeHarness.mountRoutes('/slack-clients', [ auth() ], SlackClientsRoutes);
-    routeHarness.mountRoutes('/', [ auth() ], RootRoutes);
 
   }
 };

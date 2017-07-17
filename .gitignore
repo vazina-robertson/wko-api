@@ -1,5 +1,7 @@
 backend/node_modules
+backend/config/build-info.json
 
 # Debug log from npm
 npm-debug.log
 docker-cloud.yml
+

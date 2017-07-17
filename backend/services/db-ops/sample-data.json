@@ -60,7 +60,8 @@
     {
       "token": "5oM3sUp3RL0n67oK3n",
       "name": "wko-io",
-      "data": { "slugs": [ "www", "slack", "api" ] }
+      "version_path": "version",
+      "host": "wko.io"
     }
   ],
   "user_flags": [
