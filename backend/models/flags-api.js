@@ -12,6 +12,45 @@ module.exports = class FlagsApi {
 
   /*
 
+    Check if a user has the admin flag
+
+  */
+  async isAdmin(userId)
+  {
+
+    const [ flag ] = await this._knex.from('flags as f')
+      .join('user_flags as uf', 'uf.flag_id', 'f.id')
+      .join('users as u', 'u.id', 'uf.user_id')
+      .where('f.name', 'admin')
+      .andWhere('u.id', userId)
+      .select('f.*');
+
+    return !!flag;
+
+  }
+
+  /*
+
+    Grant a user the admin flag
+
+  */
+  async newAdmin(userId)
+  {
+
+    if (!userId) {
+      throw new Error('Missing userId param!');
+    }
+
+    const flag = await this._getByName('admin');
+    await this._knex.into('user_flags').insert({
+      user_id: userId,
+      flag_id: flag.id
+    });
+
+  }
+
+  /*
+
     get all flags in db
 
   */

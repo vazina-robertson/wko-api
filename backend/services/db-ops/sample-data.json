@@ -2,7 +2,7 @@
   "flags": [
     {
       "name": "admin",
-      "description": "Allows administator access"
+      "description": "Allows administrator access"
     },
     {
       "name": "vpn",

@@ -15,6 +15,21 @@ module.exports = class UsersApi {
 
   /*
 
+    Create a new user
+
+  */
+  async create(data = {})
+  {
+
+    return await this._knex
+      .insert(data)
+      .into('users')
+      .returning(['id', 'username', 'first_name', 'last_name']);
+
+  }
+
+  /*
+
     get all users in db
 
   */
