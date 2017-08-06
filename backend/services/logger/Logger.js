@@ -40,6 +40,22 @@ class Logger {
 
   }
 
+  error(v)
+  {
+
+    if (typeof v === 'string') {
+      v = new Error(v);
+    }
+
+    if (this._sentry) {
+      // send to sentry
+    }
+
+    this._buffer = this._newBuffer();
+    console.error(v);
+
+  }
+
   kv(k, v)
   {
 
