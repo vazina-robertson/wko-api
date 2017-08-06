@@ -1,4 +1,3 @@
-const debug = require('debug')('db:init');
 const path = require('path');
 const fs = require('fs');
 
@@ -30,10 +29,11 @@ data.users = data.users.map(user => {
  */
 module.exports = class DbInit
 {
-  constructor(knex, db)
+  constructor(knex, db, logger)
   {
     this._knex = knex;
     this._db = db;
+    this._logger = logger('db:init');
   }
 
   /**
@@ -41,12 +41,12 @@ module.exports = class DbInit
    */
   async createTables()
   {
-    debug('Creating db tables now...');
+    this._logger.log('Creating db tables now...');
 
     const defs = tableFiles.map(f => require(path.join(modelsPath, f)));
 
     for (let def of defs) {
-      await def.create(this._knex);
+      await def.create(this._knex, this._logger);
     }
 
     // associate any models that need it
@@ -56,7 +56,7 @@ module.exports = class DbInit
       }
     }
 
-    debug('Tables created successfully!');
+    this._logger.log('Tables created successfully!');
   }
 
   async _importFlags()
@@ -135,7 +135,7 @@ module.exports = class DbInit
   */
   async importData()
   {
-    debug('Adding db-init data to database');
+    this._logger.log('Adding db-init data to database');
 
     // run db data insertions
     await this._importFlags();
@@ -144,6 +144,6 @@ module.exports = class DbInit
     await this._importSlackClients();
     await this._importUserFlags();
 
-    debug('DB-Init import Succeeded!');
+    this._logger.log('DB-Init import Succeeded!');
   }
 };

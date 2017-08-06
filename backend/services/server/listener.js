@@ -1,7 +1,6 @@
-const debug = require('debug')('server:listener');
 const http = require('http');
 
-const listen = (app, customPort) => {
+const listen = (app, customPort, logger) => {
 
   function normalizePort(val)
   {
@@ -20,11 +19,11 @@ const listen = (app, customPort) => {
     const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
     switch (error.code) {
       case 'EACCES':
-        debug(`Error: ${bind} requires elevated privileges`);
+        logger.kv('err', error).error(`Error: ${bind} requires elevated privileges`);
         process.exit(1);
         break;
       case 'EADDRINUSE':
-        debug(`Error: ${bind} is already in use`);
+        logger.kv('err', error).error(`Error: ${bind} is already in use`);
         process.exit(1);
         break;
       default:
@@ -38,7 +37,7 @@ const listen = (app, customPort) => {
     const bind = typeof addr === 'string'
       ? 'pipe ' + addr
       : 'port ' + addr.port;
-    debug('Listening on ' + bind);
+    logger.log('Listening on ' + bind);
   }
 
   // set port

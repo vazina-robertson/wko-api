@@ -1,4 +1,3 @@
-const debug = require('debug')('db:migrations:data-dump');
 const DbInit = require('../DbInit');
 
 /*
@@ -8,7 +7,7 @@ const DbInit = require('../DbInit');
 */
 module.exports = {
 
-  async up({ db, container })
+  async up({ db, container, logger })
   {
     const dbInit = container.new(DbInit);
 
@@ -17,18 +16,18 @@ module.exports = {
       const exists = await db.knex.schema.hasTable('users');
 
       if (exists) {
-        debug('Bailing, users table already exists.');
+        logger.log('Bailing, users table already exists.');
         return;
       }
 
-      debug('Running db-init now...');
+      logger.log('Running db-init now...');
       await dbInit.createTables();
       await dbInit.importData();
 
     }
     catch (err) {
 
-      debug('DB-Init Error: ', err);
+      logger.log('DB-Init Error: ', err);
       throw err;
     }
   }

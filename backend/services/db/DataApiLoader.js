@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-const debug = require('debug')('db:api-loader');
 const DATA_API_PATH = path.join(__dirname, '../../models');
 const DATA_API_TAIL = '-api.js';
 
@@ -24,11 +23,12 @@ const scopeName = fname =>
 module.exports = class DataApiLoader
 {
 
-  constructor(container, knex)
+  constructor(container, knex, logger)
   {
     this._container = container;
     this._knex = knex;
     this._db = {};
+    this._logger = logger('db:api-loader');
   }
 
   /**
@@ -37,7 +37,7 @@ module.exports = class DataApiLoader
    */
   createApi()
   {
-    debug('creating data layer api...');
+    this._logger.log('creating data layer api...');
 
     for (let file of apiFiles) {
       const M = require(path.join(DATA_API_PATH, file));
@@ -50,7 +50,7 @@ module.exports = class DataApiLoader
       this._db[name] = m;
     }
 
-    debug('data layer api created successfully!');
+    this._logger.log('data layer api created successfully!');
 
     // shortcuts
     this._db.knex = this._knex;

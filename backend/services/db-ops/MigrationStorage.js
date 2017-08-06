@@ -1,5 +1,3 @@
-const debug = require('debug')('db:MigrationStorage');
-
 const TNAME = '$migrations';
 
 /*
@@ -14,15 +12,17 @@ module.exports = class MigrationStorage
     if (!options || !options.storageOptions || !options.storageOptions.db) {
       throw new Error('Must provide options.storageOptions.db instance');
     }
+    const { db, logger } = options.storageOptions;
 
-    this._db = options.storageOptions.db.knex;
+    this._db = db.knex;
+    this._logger = logger('db:MigrationStorage');
   }
 
   async logMigration(name)
   {
     await this._ensureTable();
     await this._db(TNAME).insert({ date: new Date(), name });
-    debug(`Completed migration: ${name}`);
+    this._logger.log(`Completed migration: ${name}`);
   }
 
   async unlogMigration()
@@ -48,6 +48,6 @@ module.exports = class MigrationStorage
       table.dateTime('date').notNullable();
     });
 
-    debug('Created migration meta table');
+    this._logger.log('Created migration meta table');
   }
 };

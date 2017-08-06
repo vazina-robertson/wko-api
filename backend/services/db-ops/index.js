@@ -1,6 +1,5 @@
 const Umzug = require('umzug');
 const path = require('path');
-const debug = require('debug')('db:migrations');
 
 
 /*
@@ -10,14 +9,15 @@ const debug = require('debug')('db:migrations');
 */
 module.exports = class DbOpsService
 {
-  constructor(db, container)
+  constructor(db, container, logger)
   {
+    this._logger = logger('db:migrations');
     this.um = new Umzug({
       storage: path.join(__dirname, './MigrationStorage.js'),
-      storageOptions: { db },
+      storageOptions: { db, logger },
       migrations: {
         path: path.join(__dirname, './migrations'),
-        wrap: fn => async () => await fn({ db, container })
+        wrap: fn => async () => await fn({ db, container, logger: this._logger })
       }
     });
   }
@@ -25,13 +25,13 @@ module.exports = class DbOpsService
   async start()
   {
     const pending = await this.um.pending();
-    debug(`currently ${pending.length} pending migrations`);
+    this._logger.log(`currently ${pending.length} pending migrations`);
 
     // fire
 
-    debug('executing migrations');
+    this._logger.log('executing migrations');
     await this.um.up();
-    debug('migrations complete');
+    this._logger.log('migrations complete');
 
 
     // kill when done

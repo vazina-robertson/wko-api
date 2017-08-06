@@ -1,4 +1,3 @@
-const debug = require('debug')('db:model-creation');
 module.exports = {
 
   /**
@@ -6,14 +5,14 @@ module.exports = {
     create method with table definition
 
   */
-  async create(knex)
+  async create(knex, logger)
   {
     return await knex.schema.createTableIfNotExists('user_flags', table => {
       table.increments();
       // this whole table is pretty much associations
     })
     .catch(err => { throw new Error(err); })
-    .then(() => debug('user_flags table created'));
+    .then(() => logger.log('user_flags table created'));
   },
 
   /*

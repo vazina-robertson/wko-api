@@ -8,10 +8,11 @@ const listener = require('./listener');
 
 module.exports = class Server
 {
-  constructor(stackConfig, container, db, authManager)
+  constructor(stackConfig, container, db, authManager, logger)
   {
     this._config = stackConfig;
     this._container = container;
+    this._logger = logger;
     this._db = db;
     this._app = express();
     this._auth = authManager;
@@ -29,7 +30,8 @@ module.exports = class Server
 
     // use billy as a custom factory for the route harness
     const harnessOpts = Object.assign({}, this._config.harness, {
-      factory: T => this._container.new(T)
+      factory: T => this._container.new(T),
+      inject: { logger: this._logger }
     });
 
     harness.configure(harnessOpts);
@@ -42,7 +44,7 @@ module.exports = class Server
   listen()
   {
     this._initErrorHandlers();
-    listener.listen(this._app, this._config.PORT);
+    listener.listen(this._app, this._config.PORT, this._logger('server:listener'));
   }
 
   _initErrorHandlers()

@@ -1,6 +1,5 @@
 const uuid = require('uuid');
 const bcrypt = require('bcrypt');
-const debug = require('debug')('app:AuthManager');
 const jwt = require('jsonwebtoken');
 
 // How many bcrypt rounds to run
@@ -12,9 +11,10 @@ const SESSION_TOKEN_EXPIRES = FOREVER;
 
 module.exports = class AuthManager
 {
-  constructor(db, stackConfig)
+  constructor(db, stackConfig, logger)
   {
     this._db = db;
+    this._logger = logger('app:AuthManager');
     this._config = stackConfig;
   }
 
@@ -52,7 +52,7 @@ module.exports = class AuthManager
           return;
         }
 
-        // debug(`[userAuth] authenticating user ${session.user_id}: ok!`);
+        this._logger.log(`[userAuth] authenticating user ${session.user_id}: ok!`);
         req.session = session;
         req.user = await this.getUserFromSession(session);
       }

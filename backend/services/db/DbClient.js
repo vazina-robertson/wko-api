@@ -1,6 +1,5 @@
 const knexClient = require('knex');
 const retry = require('async-retry').default;
-const debug = require('debug')('db:client');
 
 /*
 
@@ -9,8 +8,9 @@ const debug = require('debug')('db:client');
 */
 module.exports = class DbClient
 {
-  constructor(stackConfig)
+  constructor(stackConfig, logger)
   {
+    this._logger = logger('db:client');
     this._knex = knexClient(stackConfig.db);
     this._knex.authenticate = async () => await this.authenticate();
   }
@@ -34,7 +34,7 @@ module.exports = class DbClient
   {
     const task = async (exit, i) => {
 
-      debug(`connection attempt: ${i}`);
+      this._logger.kv('attempt', i).log(`connection attempt: ${i}`);
       const res = await this._knex.raw('SELECT version()');
 
       if (!res || !res.rows) {
@@ -45,8 +45,8 @@ module.exports = class DbClient
     const factor = 1.5;
     const maxTimeout = 15000;
 
-    debug('...authenticating with db');
+    this._logger.log('...authenticating with db');
     await retry(task, { maxTimeout, factor });
-    debug('db connection successful!');
+    this._logger.log('db connection successful!');
   }
 };
