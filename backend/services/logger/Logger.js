@@ -29,6 +29,7 @@ class Logger {
       // send to sentry
       const data = this._bufferDump();
       data.level = 'info';
+      data.tags.logger = this._scope;
       Raven.captureMessage(s, data);
     }
 
@@ -53,6 +54,7 @@ class Logger {
       // send to sentry
       const data = this._bufferDump();
       data.level = 'error';
+      data.tags.logger = this._scope;
       Raven.captureException(v, data);
     }
 
