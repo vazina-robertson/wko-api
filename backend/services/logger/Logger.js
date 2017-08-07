@@ -25,9 +25,11 @@ class Logger {
   log(s)
   {
 
-    // check if log aggregation service is enabled
     if (this._sentry) {
       // send to sentry
+      const data = this._bufferDump();
+      data.level = 'info';
+      Raven.captureMessage(s, data);
     }
 
     // clear the buffer
@@ -49,6 +51,9 @@ class Logger {
 
     if (this._sentry) {
       // send to sentry
+      const data = this._bufferDump();
+      data.level = 'error';
+      Raven.captureException(v, data);
     }
 
     this._buffer = this._newBuffer();
@@ -69,6 +74,26 @@ class Logger {
 
     this._buffer.tags.set(k, v);
     return this;
+
+  }
+
+  _bufferDump()
+  {
+
+    const dump = { tags: { },  extra: { } };
+    for (let [ k, v ] of this._buffer.extra) {
+      if (k === 'req') {
+        dump.req = v;
+        continue;
+      }
+      dump.extra[k] = v;
+    }
+
+    for (let [ k, v ] of this._buffer.tags) {
+      dump.tags[k] = v;
+    }
+
+    return dump;
 
   }
 
