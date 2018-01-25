@@ -1,5 +1,6 @@
 const Application = require('billy');
 const config = require('./config');
+const LogManager = require('./services/logger/Logger');
 const strToArr = require('utils').strToArr;
 
 const stack = new Application();
@@ -19,10 +20,17 @@ try {
     stack.service(require(`./services/${svc}`));
   }
 
+  throw new Error('This is a test error');
   // start the app
   stack.start();
 }
 catch (err) {
-  console.error('Stack boot failure!', err);
+
+  const lm = new LogManager();
+  const logger = lm.factory('app');
+  logger
+    .kv('note', 'stack boot failure')
+    .error(err);
   process.exit(1);
+
 }
