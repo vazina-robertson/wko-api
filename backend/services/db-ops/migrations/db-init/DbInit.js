@@ -5,7 +5,7 @@ const fs = require('fs');
 const data = require('./sample-data.json');
 
 // get table definition files
-const modelsPath  = path.join(__dirname, '../../models');
+const modelsPath  = path.join(__dirname, './');
 const modelFiles = fs.readdirSync(modelsPath);
 const tableFiles = modelFiles
   .filter(file => file.slice(-9) === '-table.js');

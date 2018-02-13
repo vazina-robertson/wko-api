@@ -20,7 +20,6 @@ try {
     stack.service(require(`./services/${svc}`));
   }
 
-  throw new Error('This is a test error');
   // start the app
   stack.start();
 }

@@ -1,4 +1,4 @@
-const DbInit = require('../DbInit');
+const DbInit = require('./db-init/DbInit');
 
 /*
 
