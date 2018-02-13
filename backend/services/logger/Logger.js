@@ -156,7 +156,7 @@ module.exports = class LogManager {
       throw new Error('Must provide token and project params');
     }
 
-    Raven.config(`${tok}@sentry.io/${proj}`, {
+    Raven.config(`https://${tok}@sentry.io/${proj}`, {
       captureUnhandledRejections: true,
 
     }).install();
