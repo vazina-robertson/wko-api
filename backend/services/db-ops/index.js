@@ -27,10 +27,18 @@ module.exports = class DbOpsService
     const pending = await this.um.pending();
     this._logger.log(`currently ${pending.length} pending migrations`);
 
-    // fire
+    // fire off migrations
 
     this._logger.log('executing migrations');
-    await this.um.up();
+
+    try {
+      await this.um.up();
+    }
+    catch(err) {
+      console.error(err);
+      process.exit(1);
+    }
+
     this._logger.log('migrations complete');
 
 
