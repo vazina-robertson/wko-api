@@ -74,6 +74,8 @@ module.exports = class UsersRoutes
 
     const user = await this._users.create(newUserData);
 
+    console.log('USER JUST CREATED:', user);
+
     if (req.body.admin) {
       await this._db.flags.newAdmin(user.id);
     }

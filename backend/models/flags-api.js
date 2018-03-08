@@ -29,6 +29,17 @@ module.exports = class FlagsApi {
 
   }
 
+  async isBrewerAdmin()
+  {
+
+    const [ flag ] = await this._knex.from('user_flags as uf')
+      .where('uf.user_id', userId)
+      .where('uf.flag_id', q => q.from('flags').first('id').where('name', 'brewer-admin'));
+
+    return !!flag;
+
+  }
+
   /*
 
     Grant a user the admin flag

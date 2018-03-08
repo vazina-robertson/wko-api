@@ -9,19 +9,51 @@ module.exports = {
   async up({ db, logger })
   {
 
+    await db.knex.schema.createTableIfNotExists('beer_types', table => {
+      table.increments();
+      table.text('name').notNullable();
+    });
+
+    logger.log('beer_types table created');
+
     await db.knex.schema.createTableIfNotExists('beers', table => {
       table.increments();
       table.string('name');
-      table.string('style');
+      table.integer('main_type_id').references('beer_types.id');
       table.string('og');
       table.string('fg');
       table.string('abv');
       table.string('ibu');
       table.text('description');
+      table.boolean('on_display');
+      table.boolean('gone');
       table.timestamps(true, true);
     });
 
     logger.log('beers table created');
+
+    await db.knex.schema.createTableIfNotExists('beer_type_tags', table => {
+      table.integer('beer_id').references('beers.id');
+      table.integer('type_id').references('beer_types.id');
+      table.primary([ 'beer_id', 'type_id' ]);
+    });
+
+    logger.log('beer_type_tags table created');
+
+    await db.knex.schema.createTableIfNotExists('unit_types', table => {
+      table.increments();
+      table.text('name');
+    });
+
+    await db.knex.into('unit_types')
+      .insert([ { name: 'oz' }, { name: 'lb' }, { name: 'AA' } ]);
+
+    logger.log('unit_types table created');
+
+    await db.knex.schema.createTableIfNotExists('brew_phases', table => {
+      table.increments();
+      table.string('name');
+    });
 
     await db.knex.schema.createTableIfNotExists('recipes', table => {
       table.increments();
@@ -62,6 +94,10 @@ module.exports = {
       table.integer('recipe_id').references('recipes.id');
       table.integer('ingredient_id').references('ingredients.id');
       table.decimal('quantity').notNullable();
+      table.decimal('duration');
+      table.integer('brew_phase_id').references('brew_phases.id');
+      table.text('duration_unit');
+      table.integer('unit_type_id').references('unit_types.id');
       table.primary([ 'recipe_id', 'ingredient_id' ]);
     });
 
@@ -87,13 +123,11 @@ module.exports = {
       table.date('date');
       table.text('time');
       table.integer('brew_id').references('brews.id');
+      table.integer('unit_type_id').references('unit_types.id');
       table.timestamps(true, true);
     });
 
     logger.log('brew_notes table created');
-
-    await db.knex.into('ingredient_types')
-      .insert([ { name: 'hops', unit: 'oz' }, { name: 'grist', unit: 'lb' } ]);
 
   }
 };

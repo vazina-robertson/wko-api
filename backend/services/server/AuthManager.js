@@ -39,7 +39,8 @@ module.exports = class AuthManager
       const match = header.match(/^(bearer|jwt) (.*)$/i);
 
       if (required && !match) {
-        next({ message: 'Unauthorized', statusCode: 401 });
+        res.statusCode = 401;
+        res.send({ message: 'Unauthorized', statusCode: 401 });
         return;
       }
 
@@ -48,7 +49,8 @@ module.exports = class AuthManager
         const session = await this.getSessionFromToken(token);
 
         if (required && !session) {
-          next({ message: 'Unauthorized', statusCode: 401 });
+          res.statusCode = 401;
+          res.send({ message: 'Unauthorized', statusCode: 401 });
           return;
         }
 
@@ -71,7 +73,8 @@ module.exports = class AuthManager
     return async (req, res, next) => {
 
       if (!req.session) {
-        next({ message: 'Unauthorized', statusCode: 401 });
+        res.statusCode = 401;
+        res.send({ message: 'Unauthorized', statusCode: 401 });
         return;
       }
 
@@ -84,7 +87,8 @@ module.exports = class AuthManager
         });
 
       if (!flag) {
-        next({ message: 'Forbidden', statusCode: 403 });
+        res.statusCode = 403;
+        res.send({ message: 'Forbidden', statusCode: 403 });
         return;
       }
 

@@ -2,6 +2,8 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const Harness = require('route-harness');
 const express = require('express');
+const cors = require('cors');
+const acceptedSites = require('./accepted-sites.js');
 
 const listener = require('./listener');
 
@@ -24,6 +26,9 @@ module.exports = class Server
     this._app.use(bodyParser.json());
     this._app.use(bodyParser.urlencoded({ extended: false }));
     this._app.use(cookieParser());
+
+    // use cors
+    this._app.use(cors(acceptedSites))
 
     // init the harness
     const harness = new Harness(this._app);
