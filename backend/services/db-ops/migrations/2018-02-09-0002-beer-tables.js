@@ -18,16 +18,11 @@ module.exports = {
 
     await db.knex.schema.createTableIfNotExists('beers', table => {
       table.increments();
-      table.string('name');
+      table.text('name');
       table.integer('main_type_id').references('beer_types.id');
-      table.string('og');
-      table.string('fg');
-      table.string('abv');
-      table.string('ibu');
-      table.text('description');
       table.boolean('on_display');
-      table.boolean('gone');
       table.timestamps(true, true);
+      table.text('description');
     });
 
     logger.log('beers table created');
@@ -52,12 +47,12 @@ module.exports = {
 
     await db.knex.schema.createTableIfNotExists('brew_phases', table => {
       table.increments();
-      table.string('name');
+      table.text('name');
     });
 
     await db.knex.schema.createTableIfNotExists('recipes', table => {
       table.increments();
-      table.string('name');
+      table.text('name');
       table.timestamps(true, true);
     });
 
@@ -65,7 +60,7 @@ module.exports = {
 
     await db.knex.schema.createTableIfNotExists('recipe_links', table => {
       table.increments();
-      table.string('link');
+      table.text('link');
       table.integer('recipe_id').references('recipes.id');
       table.timestamps(true, true);
     });
@@ -74,15 +69,15 @@ module.exports = {
 
     await db.knex.schema.createTableIfNotExists('ingredient_types', table => {
       table.increments();
-      table.string('name');
-      table.string('unit');
+      table.text('name');
+      table.text('unit');
     });
 
     logger.log('ingredient_types table created');
 
     await db.knex.schema.createTableIfNotExists('ingredients', table => {
       table.increments();
-      table.string('name');
+      table.text('name');
       table.decimal('cost', 14, 2);
       table.integer('type_id').references('ingredient_types.id');
       table.timestamps(true, true);
@@ -105,8 +100,13 @@ module.exports = {
 
     await db.knex.schema.createTableIfNotExists('brews', table => {
       table.increments();
-      table.string('name');
+      table.text('name');
       table.date('brew_date');
+      table.text('og');
+      table.text('fg');
+      table.text('abv');
+      table.text('ibu');
+      table.boolean('gone');
       table.integer('batch_number');
       table.integer('brew_number');
       table.integer('beer_id').references('beers.id');
