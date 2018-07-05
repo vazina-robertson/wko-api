@@ -14,12 +14,15 @@ module.exports = (fn, info, { logger }) => {
 
     routeLogger = routeLogger || logger('route');
 
-    routeLogger
-      .kv('params', req.params)
-      .kv('query', req.query)
-      .kv('route_class', info.routeClass)
-      .kv('route_fn', info.handler)
-      .log(`${route}, ${name}()`);
+    // attach some meta to logs if given
+    if (Object.keys(req.params).length) {
+      routeLogger.kv('params', req.params);  
+    }
+    if (Object.keys(req.query).length) {
+      routeLogger.kv('query', req.query);  
+    }
+
+    routeLogger.log(`${route}, ${name}()`);
 
     try {
       const r = await fn(req, res);

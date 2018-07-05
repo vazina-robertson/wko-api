@@ -1,11 +1,12 @@
 
 module.exports = class AuthRoutes
 {
-  constructor(harness, db, authManager)
+  constructor(harness, db, authManager, logger)
   {
     this._db = db;
     this._authManager = authManager;
     const routes = harness(this);
+    this._logger = logger('app:routes:auth');
 
     routes.post('/login', this.login);
     routes.get('/login', this.loginPage);
@@ -44,19 +45,23 @@ module.exports = class AuthRoutes
 
       // check login success
       const success = await this._db.users.checkPassword(username, password);
-      if (success) {
 
-        // fetch user
-        const user = await this._db.users.getByUsername(username);
-
-        // create new session / token
-        const { token } = await this._authManager.createSession(user, req);
-        return { token, ok: true };
+      if (!success) {
+        throw new Error(); // login fail
       }
+
+      // fetch user
+      const user = await this._db.users.getByUsername(username);
+
+      // create new session / token
+      const { token } = await this._authManager.createSession(user, req);
+      return { token, ok: true };
 
     }
     catch (err) {
+      this._logger.error(err);
       throw new Error('Bad Login Credentials');
     }
+
   }
 };

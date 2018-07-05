@@ -7,7 +7,15 @@ class Logger {
   {
 
     this._sentry = !!sentry;
-    this._logger = debug(scope);
+    const logger = debug(scope);
+    this._logger = (msg, ...args) => {
+      if (args && args.length) {
+        logger(msg, args)
+      }
+      else {
+        logger(msg);
+      }
+    };
     this._scope = scope;
     this._level = 'info';
     this._buffer = this._newBuffer();
@@ -25,19 +33,31 @@ class Logger {
   log(s)
   {
 
+    const data = this._bufferDump();
+
     if (this._sentry) {
       // send to sentry
-      const data = this._bufferDump();
       data.level = 'info';
       data.tags.logger = this._scope;
       Raven.captureMessage(s, data);
     }
 
+    // log the message
+    if (Object.keys(data.tags).length > 0 && Object.keys(data.extra).length > 0) {
+      this._logger(s, data.tags, data.extra);
+    }
+    else if (Object.keys(data.tags).length > 0) {
+      this._logger(s, data.tags);
+    }
+    else if (Object.keys(data.extra).length > 0) {
+      this._logger(s, data.extra);
+    }
+    else {
+      this._logger(s);
+    }
+
     // clear the buffer
     this._buffer = this._newBuffer();
-
-    // log the message
-    this._logger(s);
 
     return this;
 
