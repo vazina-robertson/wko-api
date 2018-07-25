@@ -45,10 +45,19 @@ module.exports = {
 
     logger.log('unit_types table created');
 
+    await db.knex.schema.createTableIfNotExists('ingredient_phases', table => {
+      table.increments();
+      table.text('name');
+    });
+
+    logger.log('ingredient_phases table created');
+
     await db.knex.schema.createTableIfNotExists('brew_phases', table => {
       table.increments();
       table.text('name');
     });
+
+    logger.log('brew_phases table created');
 
     await db.knex.schema.createTableIfNotExists('recipes', table => {
       table.increments();
@@ -90,7 +99,7 @@ module.exports = {
       table.integer('ingredient_id').references('ingredients.id');
       table.decimal('quantity').notNullable();
       table.decimal('duration');
-      table.integer('brew_phase_id').references('brew_phases.id');
+      table.integer('ingredient_phase_id').references('ingredient_phases.id');
       table.text('duration_unit');
       table.integer('unit_type_id').references('unit_types.id');
       table.primary([ 'recipe_id', 'ingredient_id' ]);
@@ -110,6 +119,7 @@ module.exports = {
       table.integer('batch_number');
       table.integer('brew_number');
       table.integer('beer_id').references('beers.id');
+      table.integer('brew_phase_id').references('brew_phases.id');
       table.integer('recipe_id').references('recipes.id');
       table.timestamps(true, true);
     });
