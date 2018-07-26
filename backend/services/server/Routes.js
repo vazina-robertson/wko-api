@@ -5,6 +5,8 @@ const HostsRoutes = require('../../routes/Hosts.js');
 const SlackClientsRoutes = require('../../routes/SlackClients.js');
 const UsersRoutes = require('../../routes/Users.js');
 const BeersRoutes = require('../../routes/Beers.js');
+const BrewsRoutes = require('../../routes/Brews.js');
+const RecipesRoutes = require('../../routes/Recipes.js');
 
 
 module.exports = class Routes
@@ -22,6 +24,8 @@ module.exports = class Routes
     routeHarness.mountRoutes('/users', [ auth() ], UsersRoutes);
     routeHarness.mountRoutes('/slack-clients', [ auth() ], SlackClientsRoutes);
     routeHarness.mountRoutes('/beers', [ auth() ], BeersRoutes);
+    routeHarness.mountRoutes('/brews', [ auth() ], BrewsRoutes);
+    routeHarness.mountRoutes('/recipes', [ auth() ], RecipesRoutes);
 
   }
 };
