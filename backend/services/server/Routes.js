@@ -13,17 +13,18 @@ module.exports = class Routes
 {
   constructor(routeHarness, rest, authManager)
   {
+
     const auth = () => authManager.middleware();
 
     // un-authed-routes
     routeHarness.mountRoutes('/auth', AuthRoutes);
     routeHarness.mountRoutes('/', RootRoutes);
+    routeHarness.mountRoutes('/beers', BeersRoutes);
 
     // authed-routes
     routeHarness.mountRoutes('/hosts', [ auth() ], HostsRoutes);
     routeHarness.mountRoutes('/users', [ auth() ], UsersRoutes);
     routeHarness.mountRoutes('/slack-clients', [ auth() ], SlackClientsRoutes);
-    routeHarness.mountRoutes('/beers', [ auth() ], BeersRoutes);
     routeHarness.mountRoutes('/brews', [ auth() ], BrewsRoutes);
     routeHarness.mountRoutes('/recipes', [ auth() ], RecipesRoutes);
 

@@ -18,7 +18,23 @@ module.exports = class BeersApi {
   async getAll(limit = 20, offset = 0)
   {
 
-    return await this._knex.from('beers')
+    return await this._knex
+      .from('beers as b')
+      .leftJoin('beer_type_tags as tg', 'b.id', 'tg.beer_id')
+      .join('beer_types as style', 'style.id', 'b.main_type_id')
+      .leftJoin('beer_types as tags', 'tg.type_id', 'tags.id')
+      .select([
+        'b.*',
+        'style.name as style',
+        this._knex.raw(`
+          COALESCE (
+            json_agg(tags)
+            FILTER (WHERE tags.id IS NOT NULL), '[]')
+            AS tags
+        `)
+      ])
+      .groupBy([ 'b.id', 'style' ])
+      .orderBy('b.updated_at')
       .limit(limit)
       .offset(offset);
 
