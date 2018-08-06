@@ -56,4 +56,49 @@ module.exports = class BrewsApi {
 
   }
 
+  async create(data)
+  {
+    return await this._knex
+      .table('brews')
+      .insert({
+        name: data.name,
+        brew_date: data.brew_date,
+        og: data.og,
+        fg: data.fg,
+        abv: data.abv,
+        ibu: data.ibu,
+        gone: data.gone,
+        batch_number: data.batch_number,
+        brew_number: data.brew_number,
+        beer_id: data.beer_id,
+        brew_phase_id: data.brew_phase_id,
+        recipe_id: data.recipe_id
+      });
+  }
+
+  async update(data)
+  {
+    if (!data.id) {
+      throw new Error('Missing id for brew update');
+    }
+
+    return await this._knex
+      .table('brews')
+      .where({ id: data.id })
+      .update({
+        name: data.name,
+        brew_date: data.brew_date,
+        og: data.og,
+        fg: data.fg,
+        abv: data.abv,
+        ibu: data.ibu,
+        gone: data.gone,
+        batch_number: data.batch_number,
+        brew_number: data.brew_number,
+        beer_id: data.beer_id,
+        brew_phase_id: data.brew_phase_id,
+        recipe_id: data.recipe_id
+      });
+  }
+
 }

@@ -48,6 +48,15 @@ module.exports = class DataApiLoader
       this._container.registerValue(name, m);
 
       this._db[name] = m;
+
+      // common lightweight helper
+      this._db[name].checkExists = async id => 
+        await this._knex
+          .from(name)
+          .where({ id })
+          .select('id')
+          .first();
+
     }
 
     this._logger.log('data layer api created successfully!');
