@@ -33,17 +33,17 @@ module.exports = class BrewsApi {
   {
 
     return await this._knex.from('brews AS br')
-      .join('beers AS b', 'br.beer_id', 'b.id')
-      .join('brew_phases AS phase', 'br.brew_phase_id', 'phase.id')
-      .join('beer_types AS style', 'style.id', 'b.main_type_id')
+      .leftJoin('beers AS b', 'br.beer_id', 'b.id')
+      .leftJoin('brew_phases AS phase', 'br.brew_phase_id', 'phase.id')
+      .leftJoin('beer_types AS style', 'style.id', 'b.main_type_id')
       .leftJoin('beer_type_tags AS tag_ref', 'tag_ref.beer_id', 'b.id')
-      .join('beer_types AS tag', 'tag_ref.type_id', 'tag.id')
+      .leftJoin('beer_types AS tag', 'tag_ref.type_id', 'tag.id')
       .where('br.id', id)
-      .select([
+      .first([
         'br.*',
         'b.name AS beer_name',
         'style.name AS style',
-        this._knex.raw('json_agg(tag) AS tags'),
+        this._knex.raw(`COALESCE(json_agg(tag) FILTER (WHERE tag.id IS NOT NULL), '[]') AS tags`),
         'phase.name AS phase'
       ])
       .groupBy([

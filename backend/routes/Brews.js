@@ -3,7 +3,7 @@
   Routes for Brews
 
 */
-module.exports = class BeersRoutes
+module.exports = class BrewsRoutes
 {
   constructor(db, harness)
   {
@@ -11,8 +11,10 @@ module.exports = class BeersRoutes
     this._db = db;
     const routes = harness(this);
 
-    routes.get('/', this.getBrews);
     routes.get('/:id', this.getBrewById);
+    routes.get('/', this.getBrews);
+    routes.post('/', this.createBrew);
+    routes.put('/', this.updateBrew);
 
   }
 
