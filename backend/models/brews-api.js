@@ -101,4 +101,53 @@ module.exports = class BrewsApi {
       });
   }
 
+  async createBrewNote(data)
+  {
+
+    if (!data || !data.id) {
+      throw new Error('Missing brew_id for brew_note creation');
+    }
+
+    return await this._knex
+      .table('brew_notes')
+      .insert({
+        brew_id: data.brew_number,
+        date: data.date,
+        time: data.time,
+        note: data.note,
+        value: data.value,
+        unit_type_id: data.unit_type_id
+      });
+  }
+
+
+  async updateBrewNote(data)
+  {
+    if (!data.id) {
+      throw new Error('Missing id for brew_notes update');
+    }
+
+    return await this._knex
+      .table('brew_notes')
+      .where({ id: data.id })
+      .update({
+        date: data.date,
+        time: data.time,
+        note: data.note,
+        value: data.value,
+        unit_type_id: data.unit_type_id
+      });
+  }
+
+  async getNotesForBrewId(id)
+  {
+    if (!id) {
+      throw new Error('Missing id param for retrieving brew_notes');
+    }
+
+    return await this._knex
+      .table('brew_notes')
+      .where('brew_id', id);
+  }
+
 }
