@@ -1,12 +1,11 @@
 const path = require('path');
 const fs = require('fs');
 const DATA_API_PATH = path.join(__dirname, '../../models');
-const DATA_API_TAIL = '-api.js';
+const DATA_API_TAIL = '.js';
 
 
 // read in db api filenames to an array
-const apiFiles = fs.readdirSync(DATA_API_PATH)
-  .filter(fname => fname.slice(-1 * DATA_API_TAIL.length) === DATA_API_TAIL);
+const apiFiles = fs.readdirSync(DATA_API_PATH);
 
 /**
  * get a scope name based off a filename (converts any dashes to
