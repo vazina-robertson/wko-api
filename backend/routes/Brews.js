@@ -11,8 +11,10 @@ module.exports = class BrewsRoutes
     this._db = db;
     const routes = harness(this);
 
+    routes.get('/:id/notes', this.getBrewNoteByBrewId);
     routes.get('/:id', this.getBrewById);
     routes.get('/', this.getBrews);
+    routes.post('/:id/note', this.createNewBrewNote);
     routes.post('/', this.createBrew);
     routes.put('/', this.updateBrew);
 
@@ -57,6 +59,42 @@ module.exports = class BrewsRoutes
     }
 
     return await this._db.brews.update(data);
+
+  }
+
+  async getBrewNoteByBrewId(req) {
+
+    const id = req.params.id;
+    const exists = await this._db.brews.checkExists(id);
+
+    if (!exists) {
+      throw new Error(`Can't find brew with id ${id}`);
+    }
+
+    return await this._db.brews.getBrewNoteByBrewId(id);
+
+  }
+
+  async createNewBrewNote(req)
+  {
+
+    const id = req.params.id;
+    const exists = await this._db.brews.checkExists(id);
+
+    if (!exists) {
+      throw new Error(`Can't find brew with id ${id}`);
+    }
+
+    const data = req.body;
+    if (!data){
+      throw new Error('Missing payload for brew_note creation');
+    }
+
+    if (!data.brew_id) {
+      data.brew_id = id;
+    }
+
+    return await this._db.brews.createNewBrewNote(data);
 
   }
 
