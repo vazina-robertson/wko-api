@@ -150,4 +150,4 @@ module.exports = class BrewsApi {
       .where('brew_id', id);
   }
 
-}
+};
